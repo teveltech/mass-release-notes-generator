@@ -62,7 +62,7 @@ function run() {
                             .trim(), change_str.substring(change_str.search(' -> ') + 4).trim());
                     });
                     changes_str = Promise.all(changes_obj.map(function (change) {
-                        return generator_1.generate(change.module + ': ' + change.old_version + ' -> ' + change.new_version, owner + change.module, change.old_version, change.new_version, token);
+                        return generator_1.generate(change.module + ': ' + change.old_version + ' -> ' + change.new_version, owner + '/' + change.module, change.old_version, change.new_version, token);
                     }));
                     _b = (_a = core).setOutput;
                     _c = ['release_notes'];

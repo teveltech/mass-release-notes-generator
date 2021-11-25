@@ -33,7 +33,7 @@ export async function run(): Promise<void> {
     changes_obj.map((change) =>
       generate(
         change.module + ': ' + change.old_version + ' -> ' + change.new_version,
-        owner + change.module,
+        owner + '/' + change.module,
         change.old_version,
         change.new_version,
         token
