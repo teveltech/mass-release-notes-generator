@@ -29,7 +29,7 @@ export async function run(): Promise<void> {
       )
   );
 
-  const changes_str = Promise.all(
+  const changes_str_arr = Promise.all(
     changes_obj.map((change) =>
       generate(
         change.module + ': ' + change.old_version + ' -> ' + change.new_version,
@@ -41,6 +41,7 @@ export async function run(): Promise<void> {
     )
   );
 
+  const changes_str = (await changes_str_arr).join('\n');
   core.setOutput('release_notes', await changes_str);
 }
 run();

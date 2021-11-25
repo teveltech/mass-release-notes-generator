@@ -48,7 +48,7 @@ var change = /** @class */ (function () {
 }());
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var changes, token, owner, changes_arr, changes_obj, changes_str, _a, _b, _c;
+        var changes, token, owner, changes_arr, changes_obj, changes_str_arr, changes_str, _a, _b, _c;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
@@ -61,13 +61,16 @@ function run() {
                             .substring(change_str.search(': ') + 2, change_str.search(' -> '))
                             .trim(), change_str.substring(change_str.search(' -> ') + 4).trim());
                     });
-                    changes_str = Promise.all(changes_obj.map(function (change) {
+                    changes_str_arr = Promise.all(changes_obj.map(function (change) {
                         return generator_1.generate(change.module + ': ' + change.old_version + ' -> ' + change.new_version, owner + '/' + change.module, change.old_version, change.new_version, token);
                     }));
+                    return [4 /*yield*/, changes_str_arr];
+                case 1:
+                    changes_str = (_d.sent()).join('\n');
                     _b = (_a = core).setOutput;
                     _c = ['release_notes'];
                     return [4 /*yield*/, changes_str];
-                case 1:
+                case 2:
                     _b.apply(_a, _c.concat([_d.sent()]));
                     return [2 /*return*/];
             }
