@@ -17,7 +17,7 @@ export async function run(): Promise<void> {
   const token = core.getInput('token');
   const owner = core.getInput('owner');
 
-  const changes_arr = changes.trim().split('\n');
+  const changes_arr = changes.replace(/"|'|`/g, '').trim().split('\n');
   const changes_obj = changes_arr.map(
     (change_str) =>
       new change(

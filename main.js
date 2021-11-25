@@ -55,7 +55,7 @@ function run() {
                     changes = core.getInput('changes');
                     token = core.getInput('token');
                     owner = core.getInput('owner');
-                    changes_arr = changes.trim().split('\n');
+                    changes_arr = changes.replace(/"|'|`/g, '').trim().split('\n');
                     changes_obj = changes_arr.map(function (change_str) {
                         return new change(change_str.substring(0, change_str.search(': ')).trim(), change_str
                             .substring(change_str.search(': ') + 2, change_str.search(' -> '))
