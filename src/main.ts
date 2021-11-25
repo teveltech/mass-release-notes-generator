@@ -1,55 +1,46 @@
+import { generate } from './generator';
 import * as core from '@actions/core';
-import { generateNotes } from '@semantic-release/release-notes-generator';
-import { getOctokit } from '@actions/github';
 
-async function run(): Promise<void> {
-  const version = core.getInput('title');
-  let repository = core.getInput('repository');
-  let owner = core.getInput('owner');
-  let repo = core.getInput('repo');
-  const fromRef = core.getInput('from_ref_exclusive');
-  const toRef = core.getInput('to_ref_inclusive');
-  const githubToken = core.getInput('github_token');
-  if (repository) [owner, repo] = repository.split('/');
-  else if (owner && repo) repository = owner + '/' + repo;
-
-  try {
-    const octokit = getOctokit(githubToken);
-
-    const commits = (
-      await octokit.repos.compareCommits({
-        owner: owner,
-        repo: repo,
-        base: fromRef,
-        head: toRef
-      })
-    ).data.commits
-      .filter((commit) => !!commit.commit.message)
-      .map((commit) => ({
-        message: commit.commit.message,
-        hash: commit.sha
-      }));
-
-    const releaseNotes = await generateNotes(
-      {},
-      {
-        commits,
-        logger: { log: core.info },
-        options: {
-          repositoryUrl: repository
-            ? `https://github.com/` + repository
-            : `https://github.com/${process.env.GITHUB_REPOSITORY}`
-        },
-        lastRelease: { gitTag: fromRef },
-        nextRelease: { gitTag: toRef, version: version }
-      }
-    );
-
-    core.info(`Release notes: ${releaseNotes}`);
-    core.setOutput('release_notes', releaseNotes);
-  } catch (error) {
-    core.setFailed(`Action failed with error ${error}`);
+class change {
+  module: string;
+  old_version: string;
+  new_version: string;
+  constructor(module: string, old_version: string, new_version: string) {
+    this.module = module;
+    this.old_version = old_version;
+    this.new_version = new_version;
   }
 }
 
+export async function run(): Promise<void> {
+  const changes = core.getInput('changes');
+  const token = core.getInput('token');
+  const owner = core.getInput('owner');
+
+  const changes_arr = changes.trim().split('\n');
+  const changes_obj = changes_arr.map(
+    (change_str) =>
+      new change(
+        change_str.substring(0, change_str.search(': ')).trim(),
+        change_str
+          .substring(change_str.search(': ') + 2, change_str.search(' -> '))
+          .trim(),
+        change_str.substring(change_str.search(' -> ') + 4).trim()
+      )
+  );
+
+  const changes_str = Promise.all(
+    changes_obj.map((change) =>
+      generate(
+        change.module + ': ' + change.old_version + ' -> ' + change.new_version,
+        owner + change.module,
+        change.old_version,
+        change.new_version,
+        token
+      )
+    )
+  );
+
+  core.setOutput('release_notes', await changes_str);
+}
 run();

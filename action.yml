@@ -3,42 +3,13 @@ description: 'Generates release notes using semantic-release/release-notes-gener
 author: 'Fredrik Arvidsson'
 inputs:
   owner:
-    description: 'The Github user or organization that owns the repository'
-    required: false
-  repo:
-    description: 'The repository name'
-    required: false
-  repository:
-    description: 'The repository name in full'
-    required: false
-  github_token:
-    description: 'The Github token used to query this repository'
+    description: 'The Github user or organization that owns the repositories'
     required: true
-    default: ${{ github.token }}
-  title:
-    description: 'The title of the release'
-    required: true
-  from_ref_exclusive:
-    description: >-
-      The commit reference to gather commits after. 
-      The reference can be a tag, a branch or a commit sha.
-      Examples:
-        tags/v1.0.1
-        v1.0.1
-        heads/my-branch
-        my-branch
-        431880b
-    required: true
-  to_ref_inclusive:
-    description: >-
-      The last commit reference to include. 
-      The reference can be a tag, a branch or a commit sha.
-      Examples:
-        tags/v2.0.0
-        v2.0.0
-        heads/master
-        master
-        531c800
+  token:
+    description: 'github token'
+    required: false
+  changes:
+    description: 'A string representing all the updated images in "image: old_tag -> new_tag" format'
     required: true
 outputs:
   release_notes:

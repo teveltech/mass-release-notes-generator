@@ -36,67 +36,43 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+var generator_1 = require("./src/generator");
 var core = require("@actions/core");
-var release_notes_generator_1 = require("@semantic-release/release-notes-generator");
-var github_1 = require("@actions/github");
+var change = /** @class */ (function () {
+    function change(module, old_version, new_version) {
+        this.module = module;
+        this.old_version = old_version;
+        this.new_version = new_version;
+    }
+    return change;
+}());
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var version, repository, owner, repo, fromRef, toRef, githubToken, octokit, commits, releaseNotes, error_1;
-        var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var changes, token, owner, changes_arr, changes_obj, changes_str, _a, _b, _c;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
                 case 0:
-                    version = core.getInput('title');
-                    repository = core.getInput('repository');
+                    changes = core.getInput('changes');
+                    token = core.getInput('token');
                     owner = core.getInput('owner');
-                    repo = core.getInput('repo');
-                    fromRef = core.getInput('from_ref_exclusive');
-                    toRef = core.getInput('to_ref_inclusive');
-                    githubToken = core.getInput('github_token');
-                    if (repository)
-                        _a = repository.split('/'), owner = _a[0], repo = _a[1];
-                    else if (owner && repo)
-                        repository = owner + '/' + repo;
-                    _b.label = 1;
+                    changes_arr = changes.trim().split('\n');
+                    changes_obj = changes_arr.map(function (change_str) {
+                        return new change(change_str.substring(0, change_str.search(': ')).trim(), change_str
+                            .substring(change_str.search(': ') + 2, change_str.search(' -> '))
+                            .trim(), change_str.substring(change_str.search(' -> ') + 4).trim());
+                    });
+                    changes_str = Promise.all(changes_obj.map(function (change) {
+                        return generator_1.generate(change.module + ': ' + change.old_version + ' -> ' + change.new_version, owner + change.module, change.old_version, change.new_version, token);
+                    }));
+                    _b = (_a = core).setOutput;
+                    _c = ['release_notes'];
+                    return [4 /*yield*/, changes_str];
                 case 1:
-                    _b.trys.push([1, 4, , 5]);
-                    octokit = github_1.getOctokit(githubToken);
-                    return [4 /*yield*/, octokit.repos.compareCommits({
-                            owner: owner,
-                            repo: repo,
-                            base: fromRef,
-                            head: toRef
-                        })];
-                case 2:
-                    commits = (_b.sent()).data.commits
-                        .filter(function (commit) { return !!commit.commit.message; })
-                        .map(function (commit) { return ({
-                        message: commit.commit.message,
-                        hash: commit.sha
-                    }); });
-                    return [4 /*yield*/, release_notes_generator_1.generateNotes({}, {
-                            commits: commits,
-                            logger: { log: core.info },
-                            options: {
-                                repositoryUrl: repository
-                                    ? "https://github.com/" + repository
-                                    : "https://github.com/" + process.env.GITHUB_REPOSITORY
-                            },
-                            lastRelease: { gitTag: fromRef },
-                            nextRelease: { gitTag: toRef, version: version }
-                        })];
-                case 3:
-                    releaseNotes = _b.sent();
-                    core.info("Release notes: " + releaseNotes);
-                    core.setOutput('release_notes', releaseNotes);
-                    return [3 /*break*/, 5];
-                case 4:
-                    error_1 = _b.sent();
-                    core.setFailed("Action failed with error " + error_1);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    _b.apply(_a, _c.concat([_d.sent()]));
+                    return [2 /*return*/];
             }
         });
     });
 }
+exports.run = run;
 run();
