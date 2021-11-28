@@ -70,7 +70,7 @@ function run() {
                         .map(function (change) {
                         return change
                             .replace('# [', '## [') // smaller title
-                            .replace('/) ([0-9]{4}-[0-9]{2}-[0-9]{2})/', '');
+                            .replace(/\) \([0-9]{4}-[0-9]{2}-[0-9]{2}\)/, '');
                     } // remove date
                     )
                         .join('\n');
