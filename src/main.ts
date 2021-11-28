@@ -42,8 +42,11 @@ export async function run(): Promise<void> {
   );
 
   const changes_str = (await changes_str_arr)
-    .map((change) =>
-      change.slice(0, change.indexOf(' (')).replace('# [', '## [')
+    .map(
+      (change) =>
+        change
+          .replace('# [', '## [') // smaller title
+          .replace('/) ([0-9]{4}-[0-9]{2}-[0-9]{2})/', '') // remove date
     )
     .join('\n');
   core.setOutput('release_notes', changes_str);

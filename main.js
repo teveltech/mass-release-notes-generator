@@ -68,8 +68,11 @@ function run() {
                 case 1:
                     changes_str = (_a.sent())
                         .map(function (change) {
-                        return change.slice(0, change.indexOf(' (')).replace('# [', '## [');
-                    })
+                        return change
+                            .replace('# [', '## [') // smaller title
+                            .replace('/) ([0-9]{4}-[0-9]{2}-[0-9]{2})/', '');
+                    } // remove date
+                    )
                         .join('\n');
                     core.setOutput('release_notes', changes_str);
                     return [2 /*return*/];
