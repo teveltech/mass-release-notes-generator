@@ -68,7 +68,7 @@ function run() {
                 case 1:
                     changes_str = (_a.sent())
                         .map(function (change) {
-                        return change.slice(0, change.lastIndexOf(' (')).replace('# [', '## [');
+                        return change.slice(0, change.indexOf(' (')).replace('# [', '## [');
                     })
                         .join('\n');
                     core.setOutput('release_notes', changes_str);
