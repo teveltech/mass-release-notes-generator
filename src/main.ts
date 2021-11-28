@@ -46,7 +46,7 @@ export async function run(): Promise<void> {
       (change) =>
         change
           .replace('# [', '## [') // smaller title
-          .replace(/\) \([0-9]{4}-[0-9]{2}-[0-9]{2}\)/, '') // remove date
+          .replace(/\) \([0-9]{4}-[0-9]{2}-[0-9]{2}\)/, ')') // remove date
     )
     .join('\n');
   core.setOutput('release_notes', changes_str);
