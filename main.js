@@ -48,9 +48,9 @@ var change = /** @class */ (function () {
 }());
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var changes, token, owner, changes_arr, changes_obj, changes_str_arr, changes_str, _a, _b, _c;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
+        var changes, token, owner, changes_arr, changes_obj, changes_str_arr, changes_str;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
                     changes = core.getInput('changes');
                     token = core.getInput('token');
@@ -66,12 +66,10 @@ function run() {
                     }));
                     return [4 /*yield*/, changes_str_arr];
                 case 1:
-                    changes_str = (_d.sent()).join('\n');
-                    _b = (_a = core).setOutput;
-                    _c = ['release_notes'];
-                    return [4 /*yield*/, changes_str];
-                case 2:
-                    _b.apply(_a, _c.concat([_d.sent()]));
+                    changes_str = (_a.sent())
+                        .map(function (change) { return change.replace('# [', '## ['); })
+                        .join('\n');
+                    core.setOutput('release_notes', changes_str);
                     return [2 /*return*/];
             }
         });

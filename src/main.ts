@@ -41,7 +41,9 @@ export async function run(): Promise<void> {
     )
   );
 
-  const changes_str = (await changes_str_arr).join('\n');
-  core.setOutput('release_notes', await changes_str);
+  const changes_str = (await changes_str_arr)
+    .map((change) => change.replace('# [', '## ['))
+    .join('\n');
+  core.setOutput('release_notes', changes_str);
 }
 run();
