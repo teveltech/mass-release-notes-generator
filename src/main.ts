@@ -42,7 +42,10 @@ export async function run(): Promise<void> {
   );
 
   const changes_str = (await changes_str_arr)
-    .map((change) => change.replace('# [', '## ['))
+    .map((change) => {
+      change.replace('# [', '## [');
+      change.slice(0, change.lastIndexOf(' ('));
+    })
     .join('\n');
   core.setOutput('release_notes', changes_str);
 }

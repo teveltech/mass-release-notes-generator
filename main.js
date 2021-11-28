@@ -67,7 +67,10 @@ function run() {
                     return [4 /*yield*/, changes_str_arr];
                 case 1:
                     changes_str = (_a.sent())
-                        .map(function (change) { return change.replace('# [', '## ['); })
+                        .map(function (change) {
+                        change.replace('# [', '## [');
+                        change.slice(0, change.lastIndexOf(' ('));
+                    })
                         .join('\n');
                     core.setOutput('release_notes', changes_str);
                     return [2 /*return*/];
