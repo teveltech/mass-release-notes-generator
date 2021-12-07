@@ -42,6 +42,7 @@ export async function run(): Promise<void> {
   );
 
   const changes_str = (await changes_str_arr)
+    .filter((change) => !change.includes('Action failed'))
     .map(
       (change) =>
         change

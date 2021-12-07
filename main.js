@@ -67,6 +67,7 @@ function run() {
                     return [4 /*yield*/, changes_str_arr];
                 case 1:
                     changes_str = (_a.sent())
+                        .filter(function (change) { return !change.includes('Action failed'); })
                         .map(function (change) {
                         return change
                             .replace('# [', '## [') // smaller title
